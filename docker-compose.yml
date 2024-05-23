@@ -1,0 +1,28 @@
+# service description
+services:
+  # cloudflare tunnel
+  mysql-sv-domain:
+    image: cloudflare/cloudflared:1506-110b2b4c807f
+    volumes:
+      - ./Cloudflared/logs:/logs
+    # restart: always
+    container_name: scv_cloudflared_mysql_mapping
+    command: access tcp --hostname mysql.theshin.info --url 0.0.0.0:3336
+    ports:
+      - "3336:3336"
+    extra_hosts:
+      - host.docker.internal:host-gateway
+    networks:
+      - webnet
+    deploy:
+      resources:
+        limits:
+          cpus: "2"
+          memory: 100M
+        reservations:
+          cpus: "1"
+          memory: 50M
+networks:
+  webnet:
+    name: webnet
+    driver: bridge
